@@ -3,7 +3,7 @@ import json
 import re
 from datetime import datetime
 from bs4 import BeautifulSoup
-
+sas
 from app import create_app, db
 # 确保所有需要用到的模型都被导入
 from app.models import User, RanchLocation, WaterQuality
