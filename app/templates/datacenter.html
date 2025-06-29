@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据中心 - 海洋牧场管理系统</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #001f3f;
+            color: #ffffff;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        .card {
+            background-color: #012b4d;
+            border: none;
+            color: #fff;
+        }
+        .card-header {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .section-title {
+            color: #00bfff;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .radar-chart, .bar-chart, .map-placeholder, .table-dark {
+            background-color: #013a63;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        .btn-back {
+            background-color: transparent;
+            color: #00bfff;
+            border: none;
+            font-size: 1.2rem;
+            transition: all 0.2s;
+        }
+        .btn-back:hover {
+            color: #ffffff;
+            transform: scale(1.05);
+        }
+        #map {
+        width: 100%;
+        height: 300px;
+        border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid p-4">
+
+    <!-- 返回按钮 -->
+    <button class="btn btn-back mb-3" onclick="history.back()">
+        <i class="bi bi-arrow-left-circle"></i> 退出
+    </button>
+
+    <h2 class="section-title">数据中心可视化面板</h2>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header bg-primary">数据总量</div>
+                <div class="card-body">
+                    <p>今日新增：<strong>138</strong> 条</p>
+                    <p>累计数据：<strong>987654</strong> 条</p>
+                    <p>处理总量：<strong>999</strong> 次</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header bg-success">数据中心分布</div>
+                <div class="card-body map-placeholder">
+                    <div id="map"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header bg-info">硬件信息统计</div>
+                <div class="card-body">
+                    <p>CPU状态：<span class="text-success">良好</span></p>
+                    <p>内存状态：<span class="text-warning">临界</span></p>
+                    <p>GPU状态：<span class="text-danger">高负载</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                    <span>数据类型统计</span>
+                    <button class="btn btn-sm btn-outline-dark" id="downloadDataTypeChart">
+                        <i class="bi bi-download"></i> 导出图表
+                    </button>
+                </div>
+                <div class="card-body">
+                    <canvas id="dataTypeChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 在现有内容中添加数据分析入口 -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-header bg-info">
+                    <i class="bi bi-graph-up"></i> 数据分析工具
+                </div>
+                <div class="card-body text-center">
+                    <p>进入高级数据分析模块，进行数据处理、可视化分析和报告生成</p>
+                    <a href="{{ url_for('main.data_analysis') }}" class="btn btn-primary">
+                        <i class="bi bi-bar-chart"></i> 进入数据分析
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-danger">传感器信息</div>
+                <div class="card-body">
+                    <table class="table table-dark table-striped">
+                        <thead>
+                        <tr>
+                            <th>设备</th><th>编码</th><th>类型</th><th>大小</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr><td>摄像头</td><td>video-1</td><td>H.264</td><td>4Mb</td></tr>
+                        <tr><td>气象仪</td><td>sensor-1</td><td>TXT</td><td>100kb</td></tr>
+                        <tr><td>海流传感器</td><td>holder-1</td><td>CSV</td><td>2Mb</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-secondary">数据交互统计</div>
+                <div class="card-body">
+                    <p>数据库服务：MySQL, HBase</p>
+                    <p>传输次数：<strong>567890</strong></p>
+                    <p>接收次数：<strong>567890</strong></p>
+                    <p>平均延迟：<strong>0.1s</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- 高德地图 JS API -->
+<script src="https://webapi.amap.com/maps?v=2.0&key=65c94f8a0e51f128da4e8995234ee973"></script>
+<script>
+    // 示例图表 - 数据类型统计
+    new Chart(document.getElementById('dataTypeChart'), {
+        type: 'bar',
+        data: {
+            labels: ['图像', '文本', '视频', '声音', '结构化'],
+            datasets: [{
+                label: '数量',
+                data: [120, 90, 60, 30, 20],
+                backgroundColor: '#00bfff'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+    // 初始化高德地图
+    var map = new AMap.Map('map', {
+        zoom: 5,
+        center: [117.200983, 39.084158] // 初始视角设置为天津
+    });
+
+    // 定义城市标记点
+    var cities = [
+        { name: '广州', lnglat: [113.264385, 23.129112] },
+        { name: '南京', lnglat: [118.796877, 32.060255] },
+        { name: '青岛', lnglat: [120.382609, 36.067082] },
+        { name: '海口', lnglat: [110.19989, 20.04422] }
+    ];
+
+    // 添加标记
+    cities.forEach(function(city) {
+        new AMap.Marker({
+        map: map,
+        position: city.lnglat,
+        title: city.name
+        });
+    });
+
+    document.getElementById('downloadDataTypeChart').addEventListener('click', function() {
+        downloadChart('dataTypeChart', '数据类型统计图.png');
+    });
+
+    /**
+     * @param {string} canvasId - a canvas's id
+     * @param {string} filename - the file's name
+     */
+    function downloadChart(canvasId, filename) {
+        const chartInstance = Chart.getChart(canvasId);
+        if (chartInstance) {
+            const url = chartInstance.toBase64Image('image/png', 1);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } else {
+            console.error('无法找到图表实例:', canvasId);
+            alert('下载失败，无法找到图表实例。');
+        }
+    }
+</script>
+</body>
+</html>

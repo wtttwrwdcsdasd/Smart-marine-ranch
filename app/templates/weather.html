@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+
+{% block title %}海洋牧场天气数据{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">海洋牧场天气数据</h1>
+    
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">当前天气</h5>
+                </div>
+                <div class="card-body" id="current-weather">
+                    <div class="text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">加载中...</span>
+                        </div>
+                        <p>加载中...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">天气预报</h5>
+                </div>
+                <div class="card-body" id="weather-forecast">
+                    <div class="text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">加载中...</span>
+                        </div>
+                        <p>加载中...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 加载当前天气数据 - 使用固定位置
+    function loadCurrentWeather() {
+        fetch('/api/weather/current')
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById('current-weather').innerHTML = `
+                        <div class="alert alert-warning">
+                            ${data.error}
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // 获取紫外线指数描述
+                const uvDescription = getUVDescription(data.uv_index);
+                // 获取能见度描述
+                const visibilityDesc = getVisibilityDescription(data.visibility);
+                
+                document.getElementById('current-weather').innerHTML = `
+                    <div class="row">
+                        <div class="col-md-4 text-center mb-3">
+                            <div class="display-4">${data.temperature}°C</div>
+                            <h4>${data.weather_description}</h4>
+                            <div class="fs-5 mt-2">
+                                <i class="bi bi-cloud"></i> 云量: ${data.cloud_cover}%
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="list-group">
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="bi bi-droplet-fill text-primary"></i> 湿度
+                                    </div>
+                                    <span class="badge bg-primary rounded-pill">${data.humidity}%</span>
+                                </div>
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="bi bi-umbrella text-info"></i> 降水量
+                                    </div>
+                                    <span class="badge bg-info rounded-pill">${data.precipitation} mm</span>
+                                </div>
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="bi bi-wind text-secondary"></i> 风速
+                                    </div>
+                                    <span class="badge bg-secondary rounded-pill">${data.wind_speed} km/h</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="list-group">
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="bi bi-sun text-warning"></i> 紫外线指数
+                                    </div>
+                                    <span class="badge ${getUVBadgeColor(data.uv_index)} rounded-pill">${data.uv_index} (${uvDescription})</span>
+                                </div>
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="bi bi-eye text-dark"></i> 能见度
+                                    </div>
+                                    <span class="badge bg-dark rounded-pill">${(data.visibility/1000).toFixed(1)} km (${visibilityDesc})</span>
+                                </div>
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="bi bi-speedometer2 text-danger"></i> 气压
+                                    </div>
+                                    <span class="badge bg-danger rounded-pill">${data.pressure} hPa</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            })
+            .catch(error => {
+                console.error('获取当前天气数据失败:', error);
+                document.getElementById('current-weather').innerHTML = `
+                    <div class="alert alert-danger">
+                        获取天气数据失败，请稍后再试。
+                    </div>
+                `;
+            });
+    }
+    
+    // 获取紫外线指数描述
+    function getUVDescription(uvIndex) {
+        if (uvIndex < 3) return '低';
+        if (uvIndex < 6) return '中等';
+        if (uvIndex < 8) return '高';
+        if (uvIndex < 11) return '很高';
+        return '极高';
+    }
+    
+    // 获取紫外线指数对应的徽章颜色
+    function getUVBadgeColor(uvIndex) {
+        if (uvIndex < 3) return 'bg-success';
+        if (uvIndex < 6) return 'bg-warning';
+        if (uvIndex < 8) return 'bg-orange';
+        if (uvIndex < 11) return 'bg-danger';
+        return 'bg-purple';
+    }
+    
+    // 获取能见度描述
+    function getVisibilityDescription(visibility) {
+        const visibilityKm = visibility / 1000;
+        if (visibilityKm < 1) return '很差';
+        if (visibilityKm < 4) return '差';
+        if (visibilityKm < 10) return '中等';
+        if (visibilityKm < 20) return '良好';
+        return '极佳';
+    }
+    
+    // 加载天气预报 - 使用固定位置
+    function loadWeatherForecast() {
+        // 保持原有代码不变
+        fetch('/api/weather/forecast')
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById('weather-forecast').innerHTML = `
+                        <div class="alert alert-warning">
+                            ${data.error}
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let forecastHtml = '<div class="row">';
+                
+                // 获取预报数据
+                const dates = data.daily.time;
+                const maxTemps = data.daily.temperature_2m_max;
+                const minTemps = data.daily.temperature_2m_min;
+                const weatherCodes = data.daily.weather_code;
+                const weatherDescs = data.daily.weather_description;
+                
+                // 生成预报卡片
+                for (let i = 0; i < dates.length; i++) {
+                    const date = dates[i];
+                    const maxTemp = maxTemps[i];
+                    const minTemp = minTemps[i];
+                    const weatherDesc = weatherDescs[i];
+                    
+                    forecastHtml += `
+                        <div class="col-md-3 mb-3">
+                            <div class="card text-center">
+                                <div class="card-header">
+                                    ${formatDate(date)}
+                                </div>
+                                <div class="card-body">
+                                    <h5>${weatherDesc}</h5>
+                                    <p class="mb-0">
+                                        <span class="text-danger">${maxTemp}°</span> / 
+                                        <span class="text-primary">${minTemp}°</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                forecastHtml += '</div>';
+                document.getElementById('weather-forecast').innerHTML = forecastHtml;
+            })
+            .catch(error => {
+                console.error('获取天气预报失败:', error);
+                document.getElementById('weather-forecast').innerHTML = `
+                    <div class="alert alert-danger">
+                        获取天气预报失败，请稍后再试。
+                    </div>
+                `;
+            });
+    }
+    
+    // 格式化日期
+    function formatDate(dateStr) {
+        const date = new Date(dateStr);
+        return date.toLocaleDateString('zh-CN');
+    }
+    
+    // 页面加载完成后执行
+    document.addEventListener('DOMContentLoaded', function() {
+        // 加载当前天气数据
+        loadCurrentWeather();
+        
+        // 加载天气预报
+        loadWeatherForecast();
+    });
+</script>
+{% endblock %}

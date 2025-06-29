@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}添加牧场位置{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">添加牧场位置</h1>
+    
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="alert alert-info">
+        {% for message in messages %}
+        {{ message }}
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+    
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">位置信息</h5>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                <div class="mb-3">
+                    <label for="name" class="form-label">位置名称 <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="latitude" class="form-label">纬度 <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="latitude" name="latitude" placeholder="例如: 39.9042" required>
+                    <div class="form-text">纬度范围: -90 到 90</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="longitude" class="form-label">经度 <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="longitude" name="longitude" placeholder="例如: 116.4074" required>
+                    <div class="form-text">经度范围: -180 到 180</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="description" class="form-label">描述</label>
+                    <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                </div>
+                
+                <div class="mb-3">
+                    <div id="map" style="height: 400px; width: 100%;"></div>
+                    <div class="form-text">在地图上点击选择位置</div>
+                </div>
+                
+                <div class="d-flex justify-content-between">
+                    <a href="{{ url_for('weather.list_locations') }}" class="btn btn-secondary">返回</a>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- 引入Leaflet地图库 -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 初始化地图
+        const map = L.map('map').setView([35.0, 105.0], 4); // 中国中心位置
+        
+        // 添加OpenStreetMap图层
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+        
+        // 添加标记
+        let marker;
+        
+        // 地图点击事件
+        map.on('click', function(e) {
+            const lat = e.latlng.lat.toFixed(6);
+            const lng = e.latlng.lng.toFixed(6);
+            
+            // 更新表单字段
+            document.getElementById('latitude').value = lat;
+            document.getElementById('longitude').value = lng;
+            
+            // 更新或添加标记
+            if (marker) {
+                marker.setLatLng(e.latlng);
+            } else {
+                marker = L.marker(e.latlng).addTo(map);
+            }
+        });
+        
+        // 表单字段变更时更新地图
+        document.getElementById('latitude').addEventListener('change', updateMarker);
+        document.getElementById('longitude').addEventListener('change', updateMarker);
+        
+        function updateMarker() {
+            const lat = parseFloat(document.getElementById('latitude').value);
+            const lng = parseFloat(document.getElementById('longitude').value);
+            
+            if (!isNaN(lat) && !isNaN(lng)) {
+                const latlng = L.latLng(lat, lng);
+                
+                // 更新或添加标记
+                if (marker) {
+                    marker.setLatLng(latlng);
+                } else {
+                    marker = L.marker(latlng).addTo(map);
+                }
+                
+                // 将地图中心设置到标记位置
+                map.setView(latlng, 10);
+            }
+        }
+    });
+</script>
+{% endblock %}

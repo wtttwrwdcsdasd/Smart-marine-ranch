@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>智慧海洋牧场可视化系统</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", sans-serif;
+            background: linear-gradient(to right, #d0f0fd, #b8e1ff); 
+            color: #333;
+        }
+
+        header {
+            background-color: #74c0fc; 
+            padding: 40px 20px 60px;
+            position: relative;
+            text-align: center;
+            color: white;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        header p.lead {
+            font-size: 1.2rem;
+            color: #f0f9ff;
+        }
+
+        .nav-buttons {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+        }
+
+        .nav-buttons a {
+            margin-left: 12px;
+            padding: 8px 18px;
+            font-weight: bold;
+            border-radius: 30px;
+            border: none;
+            transition: 0.3s ease-in-out;
+        }
+
+        .btn-login {
+            background-color: #0077b6;  /* 深海蓝 */
+            color: #ffffff;
+        }
+
+        .btn-login:hover {
+            background-color: #005f8c;
+            color: #ffffff;
+        }
+
+        .btn-register {
+            background-color: #ffb703;  /* 明亮橙黄，突出注册 */
+            color: #ffffff;
+        }
+
+        .btn-register:hover {
+            background-color: #ffa200;
+            color: #ffffff;
+        }
+
+        section {
+            margin: 60px auto;
+            max-width: 1100px;
+            text-align: center;
+        }
+
+        .feature-card {
+            background: #f0faff;
+            border: 1px solid #d0ebff;
+            border-radius: 15px;
+            padding: 30px 25px;
+            color: #333;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-card i {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: #339af0;
+        }
+
+        footer {
+            background-color: #a5d8ff;
+            color: #1c3c57;
+            padding: 20px;
+            margin-top: 50px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>智慧海洋牧场可视化系统</h1>
+    <p class="lead mb-0">高效 · 智能 · 可视化的海洋养殖管理平台</p>
+    <div class="nav-buttons">
+        <a href="{{ url_for('auth.login') }}" class="btn btn-login">登录</a>
+        <a href="{{ url_for('auth.register') }}" class="btn btn-register">注册</a>
+    </div>
+</header>
+
+<section>
+    <h2 class="mb-4">欢迎访问</h2>
+    <p class="mb-5">请先登录或注册以继续使用系统。以下是本系统的主要功能模块：</p>
+
+    <div class="row justify-content-center">
+        <div class="col-md-5 mx-3">
+            <div class="feature-card">
+                <i class="bi bi-eye-fill"></i>
+                <h4>实时监控</h4>
+                <p>通过传感器和可视化界面，实时掌握海洋环境和养殖状况。</p>
+            </div>
+        </div>
+        <div class="col-md-5 mx-3">
+            <div class="feature-card">
+                <i class="bi bi-bar-chart-line-fill"></i>
+                <h4>数据分析</h4>
+                <p>采集并分析关键指标，生成图表和报告，辅助科学决策。</p>
+            </div>
+        </div>
+        <div class="col-md-5 mx-3">
+            <div class="feature-card">
+                <i class="bi bi-shield-lock-fill"></i>
+                <h4>权限管理</h4>
+                <p>支持管理员与普通用户角色区分，保障系统运行安全性。</p>
+            </div>
+        </div>
+        <div class="col-md-5 mx-3">
+            <div class="feature-card">
+                <i class="bi bi-cpu-fill"></i>
+                <h4>智能化管理</h4>
+                <p>结合AI算法，实现环境预测与自动控制优化水产养殖效率。</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    &copy; 2025 智慧海洋牧场系统 | Smart Marine Ranch All Rights Reserved
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

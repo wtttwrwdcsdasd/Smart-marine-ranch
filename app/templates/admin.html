@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>海洋管理系统 - 管理员管理</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .d-flex.flex-column.vh-100 {
+            height: 100vh;
+        }
+
+        main.flex-grow-1 {
+            overflow-y: auto;
+        }
+
+        @media (min-width: 768px) {
+            .offcanvas-start.sidebar {
+                position: static;
+                transform: none;
+                visibility: visible !important;
+                width: 445px;
+                height: 100vh;
+                border-right: 1px solid rgba(255, 255, 255, 0.1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 移动端顶部导航栏 -->
+    <nav class="navbar navbar-dark bg-dark d-md-none">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
+                data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <span class="navbar-brand mb-0 h1">海洋管理系统</span>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="d-flex">
+            <!-- 响应式侧边栏 -->
+            <div class="offcanvas offcanvas-start bg-dark text-white sidebar" tabindex="-1" id="sidebarOffcanvas">
+                <div class="offcanvas-header d-md-none">
+                    <h5 class="offcanvas-title">菜单导航</h5>
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
+                </div>
+                <div class="offcanvas-body p-3">
+                    <div class="text-center mb-4">
+                        <h5 class="text-white">海洋管理系统</h5>
+                        <p class="text-white-50" id="userInfo">
+                            欢迎，<span id="currentUser">{{ username }}</span>（管理员）
+                        </p>
+                    </div>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{{ url_for('main.user_dashboard') }}">
+                                <i class="bi bi-speedometer2 me-2"></i>主要信息
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{{ url_for('main.underwater') }}">
+                                <i class="bi bi-water me-2"></i>水下系统
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{{ url_for('main.intelligence') }}">
+                                <i class="bi bi-cpu me-2"></i>智能中心
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active text-white" href="{{ url_for('main.admin_page') }}">
+                                <i class="bi bi-gear me-2"></i>管理员管理
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{{ url_for('main.datacenter') }}">
+                                <i class="bi bi-database me-2"></i>数据中心
+                            </a>
+                        </li>
+                        <li class="nav-item mt-5">
+                            <a class="nav-link text-white" href="{{ url_for('auth.logout') }}">
+                                <i class="bi bi-box-arrow-right me-2"></i>退出登录
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 主内容区域 -->
+            <main class="flex-grow-1 px-3 mt-3">
+                <div class="d-flex justify-content-between align-items-center pt-3 pb-2 mb-4 border-bottom">
+                    <h1 class="h2">管理员控制面板</h1>
+                    <span class="text-muted">你好，管理员 {{ username }} 👑</span>
+                </div>
+
+                <div class="row">
+                    {% set cards = [
+                        {'color': 'primary', 'icon': 'people-fill', 'title': '用户管理', 'text': '查看、编辑或删除用户账户。', 'btn': '管理用户', 'link': url_for('main.manage_users_page')},
+                        {'color': 'warning', 'icon': 'file-earmark-text', 'title': '系统日志', 'text': '查看系统活动日志、操作历史和安全记录。', 'btn': '查看日志'},
+                        {'color': 'danger', 'icon': 'shield-lock', 'title': '权限审查', 'text': '分配角色、管理模块权限与访问控制。', 'btn': '设置权限'},
+                        {'color': 'info', 'icon': 'sliders', 'title': '系统设置', 'text': '配置平台参数，系统初始化或备份。', 'btn': '系统配置'},
+                        {'color': 'secondary', 'icon': 'upload', 'title': '数据导入', 'text': '上传并导入传感器或监控设备历史数据。', 'btn': '导入数据'},
+                        {'color': 'dark', 'icon': 'hdd-fill', 'title': '系统备份', 'text': '一键备份系统配置、数据库和日志信息。', 'btn': '立即备份'},
+                        {'color': 'success', 'icon': 'megaphone', 'title': '通知管理', 'text': '发布系统通知、警报推送和用户公告。', 'btn': '发送通知'},
+                        {'color': 'warning text-dark', 'icon': 'plug', 'title': '接口管理', 'text': '管理第三方系统对接与API访问权限。', 'btn': '接口配置'}
+                    ] %}
+
+                    {% for card in cards %}
+                    <div class="col-md-6">
+                        <div class="card mb-4">
+                            <div class="card-header bg-{{ card.color }} text-white">
+                                <i class="bi bi-{{ card.icon }} me-2"></i>{{ card.title }}
+                            </div>
+                            <div class="card-body">
+                                <p>{{ card.text }}</p>
+                                <a href="{{ card.link | default('#') }}" class="btn btn-outline-{{ card.color.split(' ')[0] }} btn-sm">{{ card.btn }}</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
