@@ -17,7 +17,7 @@ pip install -r requirements.txt
 3. 初始化数据库
 ```bash
 python init_db.py
-```
+```撒大苏打
 
 4. 运行开发服务器
 ```bash
