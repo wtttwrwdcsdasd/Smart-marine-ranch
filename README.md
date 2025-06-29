@@ -8,7 +8,7 @@
 ```bash
 git clone https://github.com/your-repo/Smart-marine-ranch-visualization-system.git
 ```
-
+啊萨达萨达萨达是
 2. 安装依赖
 ```bash
 pip install -r requirements.txt
