@@ -1,4 +1,4 @@
-反对犯得上v甘肃分公司Flask
+Flask
 Flask-Login
 Flask-SQLAlchemy
 Werkzeug
