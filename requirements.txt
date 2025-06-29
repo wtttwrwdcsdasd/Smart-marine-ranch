@@ -16,3 +16,4 @@ scipy
 scikit-learn
 openpyxl
 xlrd
+飒飒
